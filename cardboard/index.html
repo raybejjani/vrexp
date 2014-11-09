@@ -37,26 +37,33 @@
 
     var clock = new THREE.Clock();
 
-    drawTextToCanvas(document.getElementById('textureCanvas'), "It's full of stars!");
-    var displayTexture = textureFromCanvas(document.getElementById('textureCanvas'));
-
     init();
     animate();
 
     function cube(scene) {
-      var geometry = new THREE.BoxGeometry( 2, 16*2, 10*2 );
-      var material = new THREE.MeshBasicMaterial( { map: displayTexture } );
+      var geometry = new THREE.BoxGeometry( 2, 10*4, 16*4 );
+      var material = new THREE.MeshBasicMaterial();
       var cube = new THREE.Mesh( geometry, material );
       cube.position.set(100.0, 20.0, 2.0);
 
       cube.update = function(dt) {
+        var textureCanvas = document.getElementById('textureCanvas')
+        drawTextToCanvas(textureCanvas, "It works!\n"+buildDateString());
+        displayTexture = textureFromCanvas(textureCanvas);
+        this.material.map = displayTexture;
+        this.material.needsUpdate = true;
+
         this.rotation.x += 0.1 * dt;
-    }
         this.rotation.y += 0.1 * dt;
       }.bind(cube);
 
       renderables.push(cube);
       scene.add(cube);
+    }
+
+    function buildDateString() {
+      return (new Date()).toLocaleTimeString();
+    }
 
     function init() {
       renderer = new THREE.WebGLRenderer();
