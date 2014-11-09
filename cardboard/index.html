@@ -42,16 +42,15 @@
 
     function cube(scene) {
       var geometry = new THREE.BoxGeometry( 2, 10*4, 16*4 );
-      var material = new THREE.MeshBasicMaterial();
+      var material = new THREE.MeshBasicMaterial( {map: textureFromCanvas(textureCanvas) });
       var cube = new THREE.Mesh( geometry, material );
       cube.position.set(100.0, 20.0, 2.0);
 
       cube.update = function(dt) {
         var textureCanvas = document.getElementById('textureCanvas')
         drawTextToCanvas(textureCanvas, "It works!\n"+buildDateString());
-        displayTexture = textureFromCanvas(textureCanvas);
-        this.material.map = displayTexture;
         this.material.needsUpdate = true;
+        this.material.map.needsUpdate = true;
 
         this.rotation.x += 0.1 * dt;
         this.rotation.y += 0.1 * dt;
