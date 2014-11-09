@@ -30,11 +30,27 @@
     var camera, scene, renderer;
     var effect, controls;
     var element, container;
+    var renderables = []; // list of renderable things
 
     var clock = new THREE.Clock();
 
     init();
     animate();
+
+    function cube(scene) {
+      var geometry = new THREE.BoxGeometry( 1, 2, 3 );
+      var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+      var cube = new THREE.Mesh( geometry, material );
+      cube.position.set(30.0, 3.0, 2.0);
+
+      cube.update = function(dt) {
+        this.rotation.x += 0.1 * dt;
+        this.rotation.y += 0.1 * dt;
+      }.bind(cube);
+
+      renderables.push(cube);
+      scene.add(cube);
+		}
 
     function init() {
       renderer = new THREE.WebGLRenderer();
@@ -49,6 +65,8 @@
       camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
       camera.position.set(0, 10, 0);
       scene.add(camera);
+
+      cube(scene);
 
       controls = new THREE.OrbitControls(camera, element);
       controls.rotateUp(Math.PI / 4);
@@ -117,6 +135,8 @@
     }
 
     function update(dt) {
+      renderables.map(function(x) { x.update(dt); } );
+
       resize();
 
       camera.updateProjectionMatrix();
